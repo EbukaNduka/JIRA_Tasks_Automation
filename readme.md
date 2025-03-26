@@ -30,9 +30,9 @@ Run the following command to retrieve your JIRA user ID:
 ```sh
 python id.py {find code in repo}
 ```
-### *2*. replace placeholder with actual id in **id.py**. [Note: user ID is used to set assignee]
+### **2**. replace placeholder with actual id in **id.py**. [Note: user ID is used to set assignee]
 
-### *3*. Put your username in the jira search query function in **id.py**. 
+### **3**. Put your username in the jira search query function in **id.py**. 
 
 ### **4. Generate Your API Token**  
 - Visit: **https://id.atlassian.com/manage-profile/security/api-tokens**  
