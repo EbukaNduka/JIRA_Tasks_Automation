@@ -18,31 +18,48 @@ jira = JIRA(server=jira_url, basic_auth=(jira_user, jira_api_token))
 
 
 def get_working_days(year=2025):
-    start_date = datetime(year, 1, 1)
-    end_date = datetime(year, 3, 31)  
-
-    
-    business_days = pd.bdate_range(start=start_date, end=end_date).to_pydatetime().tolist()
-
-    return business_days[:60]  
-
+    start_date = datetime(year, 4, 1)
+    end_date = datetime(year, 5, 22)  
+    return pd.bdate_range(start=start_date, end=end_date).to_pydatetime().tolist()
 
 working_days = get_working_days()
 
 
+task_templates = [
+    {
+        "summary": "[AFX] [CMB] [CSCS] [KAS] Monitoring & Alerting from all enterprise tools",
+        "description": "I monitored the customers using the following tools:\n\nRF\nPingdom\nKsiem",
+        "issuetype": "Task",
+        "priority": "Medium",
+        "labels": ["AFX", "CMB", "CSCS", "KAS"],
+        "customfield_10213": {"value": "Monitoring & Alerting"}
+    },
+    {
+        "summary": "[AFX] [CMB] [CSCS] [KAS] Monitoring & Alerting: Manual",
+        "description": "I searched for malicious domains and social media accounts impersonating my clients to carry out dubious activities on users through OSINT.",
+        "issuetype": "Task",
+        "priority": "Medium",
+        "labels": ["AFX", "CMB", "CSCS", "KAS"],
+        "customfield_10213": {"value": "Monitoring & Alerting"}
+    },
+    {
+        "summary": "[CLAB] Avatar Management",
+        "description": "I carried out my responsibility of overseeing my Avatar on Argus and made necessary updates to the logs.",
+        "issuetype": "Task",
+        "priority": "Low",
+        "labels": ["CLAB"],
+        "customfield_10213": {"value": "Threat Intelligence SecOp"}
+    }
+]
 tasks = [
     {
-        "summary": "",
-        "description": "",
-        "issuetype": "",
-        "priority": "",
-        "duedate": working_days[i].strftime("%Y-%m-%d"),  
-        "labels": [""],
-        "assignee": {"id": "assignee_id"},  
-        "customfield_10213": {"value": ""},  # Category (Custom Field)
-        "customfield_10015": working_days[i].strftime("%Y-%m-%d")  # Start Date (Custom Field)
+        **template,  # Copy all fields from the template
+        "duedate": day.strftime("%Y-%m-%d"),
+        "customfield_10015": day.strftime("%Y-%m-%d"),  # Start Date
+        "assignee": {"id": assignee_id}
     }
-    for i in range(60)  
+    for day in working_days
+    for template in task_templates  # Create ALL templates for EACH day
 ]
 
 
@@ -56,7 +73,7 @@ def get_transition_id(issue_key, status_name="Done"):
 
 for task in tasks:
     new_issue = jira.create_issue(
-        project="",  
+        project="CT",  
         summary=task["summary"],
         description=task["description"],
         issuetype={"name": task["issuetype"]},
